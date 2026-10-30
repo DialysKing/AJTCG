@@ -45,3 +45,5 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
   nav button{width:auto}
   #signout{margin-top:0}
 }
+.logo-wrap{margin:0}
+.logo-img{display:block;width:100%;max-width:180px;height:auto}
