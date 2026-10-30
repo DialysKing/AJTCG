@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AJTCG Stock &amp; VAT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1 class="logo">AJTCG</h1>
+  <nav id="tabs" hidden>
+    <button data-tab="stock" class="on">Stock</button>
+    <button data-tab="sell">Sell</button>
+    <button data-tab="vat">VAT</button>
+    <button id="signout">Sign out</button>
+  </nav>
+</header>
+<main>
+  <section id="login" class="card" hidden>
+    <h2>Staff sign in</h2>
+    <form id="loginForm">
+      <label>Email <input id="email" type="email" required autocomplete="username"></label>
+      <label>Password <input id="password" type="password" required autocomplete="current-password"></label>
+      <button class="primary">Sign in</button>
+    </form>
+  </section>
+
+  <section id="stock" class="card tab" hidden>
+    <h2>Stock</h2>
+    <form id="addForm" class="row">
+      <label>Name <input id="aName" required></label>
+      <label>Category <select id="aCat"><option>card</option><option>game</option><option>console</option><option>sealed</option></select></label>
+      <label>VAT scheme <select id="aScheme"><option value="margin">Margin (second-hand)</option><option value="standard">Standard (new)</option></select></label>
+      <label>Quantity <input id="aQty" type="number" min="1" value="1" required></label>
+      <label>Cost each (£) <input id="aCost" type="number" min="0" step="0.01" required></label>
+      <button class="primary">Add stock</button>
+    </form>
+    <div class="scroll"><table id="stockTable"></table></div>
+  </section>
+
+  <section id="sell" class="card tab" hidden>
+    <h2>Record a sale</h2>
+    <p class="note">Payment is taken outside this system. Enter what the customer paid.</p>
+    <form id="sellForm" class="row">
+      <label>Item <select id="sItem" required></select></label>
+      <label>Quantity <input id="sQty" type="number" min="1" value="1" required></label>
+      <label>Total paid (£) <input id="sPrice" type="number" min="0" step="0.01" required></label>
+      <button class="primary">Record sale</button>
+    </form>
+  </section>
+
+  <section id="vat" class="card tab" hidden>
+    <h2>VAT summary</h2>
+    <div class="row">
+      <label>From <input id="vFrom" type="date"></label>
+      <label>To <input id="vTo" type="date"></label>
+    </div>
+    <div id="totals" class="totals"></div>
+    <div class="scroll"><table id="vatTable"></table></div>
+  </section>
+</main>
+<div id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
