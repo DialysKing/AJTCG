@@ -60,3 +60,6 @@ td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 .toggle input:checked~.track{background:var(--line)}
 .toggle input:checked~.track::after{transform:translateX(1rem)}
 .toggle input:focus-visible~.track{outline:2px solid var(--good);outline-offset:3px}
+.sort{display:inline-flex;align-items:center;gap:.35rem;padding:0;border:0;background:none;color:inherit;font:inherit;font-weight:600}
+.sort:hover,.sort.active{background:none;color:var(--ink)}
+.sort .arrow{font-size:.7rem;opacity:.75}
