@@ -11,7 +11,7 @@
 </head>
 <body>
 <aside id="side">
-  <h1 class="logo-wrap"><img class="logo-img" src="images/AJTCG.png" alt="AJTCG"></h1>
+  <h1 class="logo-wrap"><img class="logo-img" src="images/logo.png" alt="AJTCG"></h1>
   <nav id="tabs" hidden>
     <button data-tab="dashboard" class="on">Dashboard</button>
     <button data-tab="stock">Stock</button>
@@ -42,6 +42,11 @@
 
   <section id="stock" class="card tab" hidden>
     <h2>Stock</h2>
+    <div class="toolbar">
+      <label class="switch"><input type="checkbox" id="showZero"><span class="track"></span>Show out of stock</label>
+      <input id="sSearch" type="search" placeholder="Search stock, e.g. umbreon or OP01-025" aria-label="Search stock">
+      <span id="stockCount" class="note"></span>
+    </div>
     <div class="scroll"><table id="stockTable"></table></div>
   </section>
 
