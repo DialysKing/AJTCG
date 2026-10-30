@@ -10,15 +10,16 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<header>
+<aside id="side">
   <h1 class="logo">AJTCG</h1>
   <nav id="tabs" hidden>
     <button data-tab="stock" class="on">Stock</button>
+    <button data-tab="add">Add stock</button>
     <button data-tab="sell">Sell</button>
     <button data-tab="vat">VAT</button>
     <button id="signout">Sign out</button>
   </nav>
-</header>
+</aside>
 <main>
   <section id="login" class="card" hidden>
     <h2>Staff sign in</h2>
@@ -31,6 +32,11 @@
 
   <section id="stock" class="card tab" hidden>
     <h2>Stock</h2>
+    <div class="scroll"><table id="stockTable"></table></div>
+  </section>
+
+  <section id="add" class="card tab" hidden>
+    <h2>Add stock</h2>
     <form id="addForm" class="row">
       <label>Name <input id="aName" required></label>
       <label>Category <select id="aCat"><option>card</option><option>game</option><option>console</option><option>sealed</option></select></label>
@@ -39,7 +45,6 @@
       <label>Cost each (£) <input id="aCost" type="number" min="0" step="0.01" required></label>
       <button class="primary">Add stock</button>
     </form>
-    <div class="scroll"><table id="stockTable"></table></div>
   </section>
 
   <section id="sell" class="card tab" hidden>
