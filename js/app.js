@@ -36,13 +36,7 @@ async function load() {
 const remaining = it => it.quantity - sales.filter(s => s.item_id === it.id).reduce((n, s) => n + s.quantity, 0);
 
 function render() {
-  $("#stockTable").innerHTML =
-    "<tr><th>Item</th><th>Category</th><th>Scheme</th><th class=n>In stock</th><th class=n>Cost each</th></tr>" +
-    (items.map(it => {
-      const r = remaining(it);
-      return `<tr><td>${esc(it.name)}</td><td>${esc(it.category || "")}</td><td>${esc(it.scheme)}</td>
-        <td class="n ${r <= 0 ? "low" : ""}">${r}</td><td class=n>${gbp(it.unit_cost_pence)}</td></tr>`;
-    }).join("") || "<tr><td colspan=5>No stock yet. Add your first item above.</td></tr>");
+  renderStock();
   $("#sItem").innerHTML = items.filter(it => remaining(it) > 0)
     .map(it => `<option value="${it.id}">${esc(it.name)} (${remaining(it)} left)</option>`).join("");
   renderVat();
@@ -131,3 +125,22 @@ function renderDash() {
     series: [{ name: "Takings", borderWidth: 0, data: days.map((k, i) => ({ y: byDay[k] / 100, color: i === 6 ? "#4d8dff" : "#28508f" })) }]
   });
 }
+
+function renderStock() {
+  const words = $("#sSearch").value.toLowerCase().split(/\s+/).filter(Boolean);
+  const showZero = $("#showZero").checked;
+  const rows = items.filter(it => {
+    const hay = (it.name + " " + (it.category || "")).toLowerCase();
+    return (showZero || remaining(it) > 0) && words.every(w => hay.includes(w));
+  });
+  $("#stockCount").textContent = `${rows.length} of ${items.length} items`;
+  $("#stockTable").innerHTML =
+    "<tr><th>Item</th><th>Category</th><th>Scheme</th><th class=n>In stock</th><th class=n>Cost each</th></tr>" +
+    (rows.map(it => {
+      const r = remaining(it);
+      return `<tr><td>${esc(it.name)}</td><td>${esc(it.category || "")}</td><td>${esc(it.scheme)}</td>
+        <td class="n ${r <= 0 ? "low" : ""}">${r}</td><td class=n>${gbp(it.unit_cost_pence)}</td></tr>`;
+    }).join("") || `<tr><td colspan=5>${items.length ? "No items match. Try a different search, or turn on Show out of stock." : "No stock yet. Add your first item on the Add stock tab."}</td></tr>`);
+}
+$("#sSearch").oninput = renderStock;
+$("#showZero").onchange = renderStock;
