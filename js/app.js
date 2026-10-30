@@ -19,6 +19,7 @@ function toast(msg, bad) {
 function show(tab) {
   document.querySelectorAll(".tab").forEach(s => (s.hidden = s.id !== tab));
   document.querySelectorAll("#tabs [data-tab]").forEach(b => b.classList.toggle("on", b.dataset.tab === tab));
+  if (tab === "dashboard") renderDash();
 }
 
 async function load() {
@@ -45,6 +46,7 @@ function render() {
   $("#sItem").innerHTML = items.filter(it => remaining(it) > 0)
     .map(it => `<option value="${it.id}">${esc(it.name)} (${remaining(it)} left)</option>`).join("");
   renderVat();
+  renderDash();
 }
 
 function renderVat() {
@@ -105,6 +107,27 @@ async function start() {
   const d = new Date();
   $("#vFrom").value = new Date(d.getFullYear(), d.getMonth(), 1).toLocaleDateString("en-CA");
   $("#vTo").value = d.toLocaleDateString("en-CA");
-  show("stock"); load();
+  show("dashboard"); load();
 }
 start();
+
+const dayKey = d => new Date(d).toLocaleDateString("en-CA");
+function renderDash() {
+  if ($("#dashboard").hidden || !window.Highcharts) return;
+  const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); return dayKey(d); });
+  const byDay = Object.fromEntries(days.map(k => [k, 0]));
+  sales.forEach(s => { const k = dayKey(s.sold_at); if (k in byDay) byDay[k] += s.sale_price_pence; });
+  const todays = sales.filter(s => dayKey(s.sold_at) === days[6]);
+  $("#dToday").textContent = gbp(byDay[days[6]]);
+  $("#dCount").textContent = todays.length;
+  const grey = "#8fa3c7";
+  Highcharts.chart("chart", {
+    chart: { type: "column", backgroundColor: "transparent" },
+    title: { text: "Takings, last 7 days", style: { color: "#e6eefc" } },
+    credits: { enabled: false }, legend: { enabled: false },
+    xAxis: { categories: days.map(k => new Date(k + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short" })), labels: { style: { color: grey } } },
+    yAxis: { title: { text: null }, min: 0, labels: { format: "£{value}", style: { color: grey } }, gridLineColor: "#1f3a6b" },
+    tooltip: { pointFormat: "<b>£{point.y:.2f}</b>" },
+    series: [{ name: "Takings", borderWidth: 0, data: days.map((k, i) => ({ y: byDay[k] / 100, color: i === 6 ? "#4d8dff" : "#28508f" })) }]
+  });
+}
