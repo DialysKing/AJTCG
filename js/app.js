@@ -126,6 +126,18 @@ function renderDash() {
   });
 }
 
+let sort = { key: "name", dir: 1 };
+const sortVal = { name: it => it.name, qty: it => remaining(it), price: it => it.unit_cost_pence };
+
+function stockHead() {
+  const th = (key, label, cls = "") => {
+    const on = sort.key === key;
+    return `<th class="${cls}" aria-sort="${on ? (sort.dir === 1 ? "ascending" : "descending") : "none"}">
+      <button class="sort ${on ? "active" : ""}" data-sort="${key}">${label}<span class="arrow">${on ? (sort.dir === 1 ? "▲" : "▼") : "↕"}</span></button></th>`;
+  };
+  return "<tr>" + th("name", "Item") + "<th>Category</th><th>Scheme</th>" + th("qty", "In stock", "n") + th("price", "Cost each", "n") + "</tr>";
+}
+
 function renderStock() {
   const words = $("#sSearch").value.toLowerCase().split(/\s+/).filter(Boolean);
   const showZero = $("#showZero").checked;
@@ -133,9 +145,15 @@ function renderStock() {
     const hay = (it.name + " " + (it.category || "")).toLowerCase();
     return (showZero || remaining(it) > 0) && words.every(w => hay.includes(w));
   });
+  const f = sortVal[sort.key];
+  rows.sort((p, q) => {
+    const x = f(p), y = f(q);
+    const c = typeof x === "string" ? x.localeCompare(y, undefined, { numeric: true, sensitivity: "base" }) : x - y;
+    return c ? c * sort.dir : p.name.localeCompare(q.name, undefined, { numeric: true });
+  });
   $("#stockCount").textContent = `${rows.length} of ${items.length} items`;
   $("#stockTable").innerHTML =
-    "<tr><th>Item</th><th>Category</th><th>Scheme</th><th class=n>In stock</th><th class=n>Cost each</th></tr>" +
+    stockHead() +
     (rows.map(it => {
       const r = remaining(it);
       return `<tr><td>${esc(it.name)}</td><td>${esc(it.category || "")}</td><td>${esc(it.scheme)}</td>
@@ -144,3 +162,11 @@ function renderStock() {
 }
 $("#sSearch").oninput = renderStock;
 $("#showZero").onchange = renderStock;
+$("#stockTable").onclick = e => {
+  const b = e.target.closest("[data-sort]");
+  if (!b) return;
+  const k = b.dataset.sort;
+  sort = sort.key === k ? { key: k, dir: -sort.dir } : { key: k, dir: 1 };
+  renderStock();
+  $(`#stockTable [data-sort="${k}"]`).focus();
+};
