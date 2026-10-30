@@ -11,9 +11,10 @@
 </head>
 <body>
 <aside id="side">
-  <h1 class="logo-wrap"><img class="logo-img" src="images/AJTCG.png" alt="AJTCG"></h1>
+  <h1 class="logo">AJTCG</h1>
   <nav id="tabs" hidden>
-    <button data-tab="stock" class="on">Stock</button>
+    <button data-tab="dashboard" class="on">Dashboard</button>
+    <button data-tab="stock">Stock</button>
     <button data-tab="add">Add stock</button>
     <button data-tab="sell">Sell</button>
     <button data-tab="vat">VAT</button>
@@ -28,6 +29,15 @@
       <label>Password <input id="password" type="password" required autocomplete="current-password"></label>
       <button class="primary">Sign in</button>
     </form>
+  </section>
+
+  <section id="dashboard" class="card tab" hidden>
+    <h2>Dashboard</h2>
+    <div class="totals">
+      <div class="due">Sales today<b id="dToday">£0.00</b></div>
+      <div>Number of sales<b id="dCount">0</b></div>
+    </div>
+    <div id="chart"></div>
   </section>
 
   <section id="stock" class="card tab" hidden>
@@ -70,6 +80,7 @@
 </main>
 <div id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="https://code.highcharts.com/11.4.8/highcharts.js"></script>
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>
 </body>
